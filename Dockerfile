@@ -1,5 +1,5 @@
 # Use an official Maven image to build the project
-FROM maven:3.8.4-openjdk-21-slim AS build
+FROM openjdk:21-jdk-slim
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -23,10 +23,10 @@ FROM openjdk:21-jdk-slim
 WORKDIR /app
 
 # Copy the jar file from the build stage to the final image
-COPY --from=build /app/target/task-0.0.1-SNAPSHOT.jar /app/task-manager.jar
+COPY --from=build /app/target/globetales-0.0.1-SNAPSHOT.jar /app/globetales.jar
 
 # Expose the default Spring Boot port
 EXPOSE 8080
 
 # Command to run the Spring Boot application
-ENTRYPOINT ["java", "-jar", "/app/task-manager.jar"]
+ENTRYPOINT ["java", "-jar", "/app/globetales.jar"]
