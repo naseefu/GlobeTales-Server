@@ -1,0 +1,8 @@
+target/*.war
+target/*.tar
+*.md
+*.git
+*.gitignore
+Dockerfile
+*.properties
+*.yml
