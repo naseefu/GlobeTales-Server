@@ -1,22 +1,26 @@
-FROM openjdk:21-jdk-slim as build
+# Use Maven image for building the application
+FROM maven:3.9.4-eclipse-temurin-21 as build
 
-# Install Maven
-RUN apt-get update && apt-get install -y maven
+WORKDIR /app
 
-# Copy project files
-COPY . .
+# Copy Maven configuration and fetch dependencies
+COPY pom.xml . 
+RUN mvn dependency:go-offline
 
-# Run Maven build
+# Copy source code and build the application
+COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Final image
+# Use OpenJDK for running the application
 FROM openjdk:21-jdk-slim
 
-# Copy the generated .jar file from the build stage
-COPY --from=build /target/globetales-0.0.1-SNAPSHOT.jar globetales.jar
+WORKDIR /app
 
-# Expose port 8080
+# Copy the built JAR file
+COPY --from=build /app/target/globetales-0.0.1-SNAPSHOT.jar .
+
+# Expose the application port
 EXPOSE 8080
 
 # Run the application
-ENTRYPOINT [ "java", "-jar", "globetales.jar" ]
+ENTRYPOINT ["java", "-jar", "/app/globetales-0.0.1-SNAPSHOT.jar"]
